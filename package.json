@@ -1,0 +1,27 @@
+{
+  "name": "study-companion",
+  "version": "1.0.0",
+  "description": "\"# study-companion\"",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Chrishaann/study-companion.git"
+  },
+  "author": "Christian Nasayao",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Chrishaann/study-companion/issues"
+  },
+  "homepage": "https://github.com/Chrishaann/study-companion#readme",
+  "dependencies": {
+    "ejs-electron": "^3.0.0",
+    "url": "^0.11.4"
+  },
+  "devDependencies": {
+    "electron": "^34.1.1"
+  }
+}
