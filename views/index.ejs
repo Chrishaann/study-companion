@@ -16,12 +16,14 @@
 </head>
 <body class="container mt-3">
     <div id="selectionView">
-        <h1>Main Window</h1>
-        <div class="input-group mb-3">
-            <input type="text" class="form-control" id="filePathTxt" placeholder="CSV file path" aria-describedby="button-addon2" disabled>
-            <button class="btn btn-primary" type="button" id="configureBtn">Configure</button>
-            <button class="btn btn-secondary" type="button" id="refreshBtn"><i class="bi bi-arrow-clockwise"></i>
-            </button>
+        <div class="card">
+            <div class="card-body shadow p-4">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="filePathTxt" placeholder="CSV file path" aria-describedby="button-addon2" disabled>
+                    <button class="btn btn-primary" type="button" id="configureBtn">Configure</button>
+                    <button class="btn btn-secondary" type="button" id="refreshBtn"><i class="bi bi-arrow-clockwise"></i></button>
+                </div>
+            </div>
         </div>
         <br>
         <div class="row" id="loadedFiles"></div>
