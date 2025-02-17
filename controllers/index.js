@@ -1,15 +1,13 @@
 let current = 0,
     total = 0;
-    correct = [];
-    incorrect = [],
+    summary = [];
     quizItems = [];
 
 function initializeView() {
     current = 0;
     total = 0;
-    correct = [];
-    incorrect = [];
     quizItems = [];
+    summary = [];
     showSelectionView(true);
     showQuizView(false);
     displayAnswerNotif("hide");
@@ -37,9 +35,6 @@ function showQuizView(show, showSummary = false) {
     if (showSummary) {
         document.getElementById("startQuizView").style.display = "block";
         document.getElementById("summaryView").style.display = "block";
-
-        document.getElementById("correctList").innerText = `${ correct.join(",") }`
-        document.getElementById("incorrectList").innerText = `${ incorrect.join(",") }`
     } else {
         document.getElementById("summaryView").style.display = "none";
     }
@@ -49,6 +44,7 @@ function displayQuestions() {
     if (current < total) {
         let questionText = document.getElementById("questionText");
         questionText.innerText = quizItems[current].Q;
+        document.getElementById("answerInput").focus();
     }
 }
 
@@ -82,6 +78,67 @@ function shuffleArray(arr) {
 function resetProgressBar() {
     document.getElementById("progressBar").style.width = `0%`;
     document.getElementById("progressBar").setAttribute("aria-valuenow", 0);
+}
+
+function endQuiz() {
+    showQuizView(false, true);
+    prepareSummary();
+}
+
+function prepareSummary() {
+    const summaryBody = document.getElementById("summaryBody");
+    summaryBody.innerHTML = "";
+
+    // Header
+    const rowHeader = document.createElement("tr");
+    const headerName1 = document.createElement("td");
+    const headerName2 = document.createElement("td");
+    const headerName3 = document.createElement("td");
+    headerName1.innerText = "Question";
+    headerName2.innerText = "Answer";
+    headerName3.innerText = "Your Answer";
+    headerName1.className = "fw-bold table-light fs-3";
+    headerName2.className = "fw-bold table-light fs-3";
+    headerName3.className = "fw-bold table-light fs-3";
+
+    rowHeader.appendChild(headerName1);
+    rowHeader.appendChild(headerName2);
+    rowHeader.appendChild(headerName3);
+
+    summaryBody.appendChild(rowHeader);
+
+
+    // User summary
+    let correct = 0;
+    summary.forEach((record) => {
+        const row = document.createElement("tr");
+        const questionData = document.createElement("td");
+        const answerData = document.createElement("td");
+        const userAnswerData = document.createElement("td");
+    
+        questionData.innerText = record.question;
+        answerData.innerText = record.answer;
+        userAnswerData.innerText = record.userAnswer
+        questionData.className = "fs-3";
+        answerData.className = "fs-3";
+        userAnswerData.className = "fs-3";
+
+        if (record.isCorrect) {
+            userAnswerData.className = "text-success fs-3";
+            correct++;
+        } else {
+            userAnswerData.className = "text-danger fs-3";
+        }
+        
+        
+        row.appendChild(questionData);
+        row.appendChild(answerData);
+        row.appendChild(userAnswerData);
+        summaryBody.appendChild(row);
+    });
+
+    const score = document.getElementById("score");
+    score.innerText = `Score: ${ correct }/${ summary.length }`;
 }
 
 function setSavedDirectoryPath() {
@@ -142,19 +199,30 @@ async function loadDirectoryPathFiles(filePath) {
                 quizItems = shuffleArray(quizItems);
                 showSelectionView(false);
                 showQuizView(true);
+
                 // reset
-                total = quizItems.length;
-                current = 0;
-                correct = [];
-                incorrect = [];
-                resetProgressBar();
-                displayQuestions();
+                reset();
             } catch (err) {
                 console.error(err);
                 location.reload();
             }
         });
     });
+}
+
+function disableInputFields(status) {
+    document.getElementById("answerInput").disabled = status;
+    document.getElementById("submitBtn").disabled = status;
+}
+
+function reset() {
+    total = quizItems.length;
+    current = 0;
+    summary = [];
+    resetProgressBar();
+    displayQuestions();
+    document.getElementById("answerInput").value = "";
+    displayAnswerNotif("hide");
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -177,14 +245,25 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     document.getElementById("submitBtn").addEventListener("click", () => {
+        if (current >= total) return;
+
+        disableInputFields(true);
+
         let submittedAnswer = document.getElementById("answerInput").value;
+        let summaryItem = {
+            question: quizItems[current].Q,
+            answer: quizItems[current].A,
+            userAnswer: submittedAnswer,
+        }
+
         if (quizItems[current].A == submittedAnswer) {
             displayAnswerNotif("correct");
-            correct.push(quizItems[current].Q);
+            summaryItem.isCorrect = true;
         } else {
             displayAnswerNotif("incorrect");
-            incorrect.push(quizItems[current].Q);
+            summaryItem.isCorrect = false;
         }
+        summary.push(summaryItem);
 
         let currentProgress = ((current + 1) / total) * 100;            
         document.getElementById("progressBar").style.width = `${ currentProgress }%`;
@@ -193,8 +272,9 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => {
             current++;
 
+            disableInputFields(false);
             if (current >= total) {
-                showQuizView(false, true);
+                return endQuiz();
             }
 
             document.getElementById("answerInput").value = "";
@@ -205,5 +285,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("refreshBtn").addEventListener("click", () => {
         location.reload();
-    })
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            event.preventDefault(); // Stop default Enter key behavior
+            document.getElementById("submitBtn").click();
+        }
+    });
 });
