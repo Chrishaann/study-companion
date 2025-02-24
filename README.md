@@ -19,3 +19,6 @@ npm install
 
 # Start the application
 npm start
+
+# Installer
+https://drive.google.com/drive/folders/1STQAiFzRvZwv_MAo27HzZcfDzEuPe6lf?usp=sharing

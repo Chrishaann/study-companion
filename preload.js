@@ -20,6 +20,7 @@ async function readFile(filePath) {
                 let pairObj = {
                     Q: pair[0]?.trim(),
                     A: pair[1]?.trim(),
+                    label: pair[2]?.trim() || "",
                 };
 
                 parsedData.push(pairObj);

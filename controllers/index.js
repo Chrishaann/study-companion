@@ -94,16 +94,22 @@ function prepareSummary() {
     const headerName1 = document.createElement("td");
     const headerName2 = document.createElement("td");
     const headerName3 = document.createElement("td");
+    const headerName4 = document.createElement("td");
+
     headerName1.innerText = "Question";
     headerName2.innerText = "Answer";
-    headerName3.innerText = "Your Answer";
-    headerName1.className = "fw-bold table-light fs-3";
-    headerName2.className = "fw-bold table-light fs-3";
-    headerName3.className = "fw-bold table-light fs-3";
+    headerName3.innerText = "Label";
+    headerName4.innerText = "Your Answer";
+
+    headerName1.className = "fw-bold table-light";
+    headerName2.className = "fw-bold table-light";
+    headerName3.className = "fw-bold table-light";
+    headerName4.className = "fw-bold table-light";
 
     rowHeader.appendChild(headerName1);
     rowHeader.appendChild(headerName2);
     rowHeader.appendChild(headerName3);
+    rowHeader.appendChild(headerName4);
 
     summaryBody.appendChild(rowHeader);
 
@@ -114,25 +120,25 @@ function prepareSummary() {
         const row = document.createElement("tr");
         const questionData = document.createElement("td");
         const answerData = document.createElement("td");
+        const labelData = document.createElement("td");
         const userAnswerData = document.createElement("td");
     
         questionData.innerText = record.question;
         answerData.innerText = record.answer;
-        userAnswerData.innerText = record.userAnswer
-        questionData.className = "fs-3";
-        answerData.className = "fs-3";
-        userAnswerData.className = "fs-3";
+        labelData.innerText = record.label;
+        userAnswerData.innerText = record.userAnswer;
 
         if (record.isCorrect) {
-            userAnswerData.className = "text-success fs-3";
+            userAnswerData.className = "text-success";
             correct++;
         } else {
-            userAnswerData.className = "text-danger fs-3";
+            userAnswerData.className = "text-danger";
         }
         
         
         row.appendChild(questionData);
         row.appendChild(answerData);
+        row.appendChild(labelData);
         row.appendChild(userAnswerData);
         summaryBody.appendChild(row);
     });
@@ -197,6 +203,9 @@ async function loadDirectoryPathFiles(filePath) {
             try {
                 quizItems = await window.myApi.readFile(quizFilePath);
                 quizItems = shuffleArray(quizItems);
+
+                console.log("[TEST] quizItems: ", quizItems);
+
                 showSelectionView(false);
                 showQuizView(true);
 
@@ -253,6 +262,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let summaryItem = {
             question: quizItems[current].Q,
             answer: quizItems[current].A,
+            label: quizItems[current].label,
             userAnswer: submittedAnswer,
         }
 
