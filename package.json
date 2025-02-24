@@ -1,6 +1,6 @@
 {
   "name": "study-companion",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "\"# study-companion\"",
   "main": "main.js",
   "build": {

@@ -175,7 +175,7 @@ async function loadDirectoryPathFiles(filePath) {
         colDiv.className = "col-sm-3";
 
         const cardDiv = document.createElement("div");
-        cardDiv.className = "card";
+        cardDiv.className = "card m-1";
 
         const cardBodyDiv = document.createElement("div");
         cardBodyDiv.className = "card-body";
